@@ -1,6 +1,5 @@
 import java.util.Scanner;
 
-
 public class ESTJ {
     private static final String bar = "  ____________________________________________________________";
 
@@ -17,62 +16,81 @@ public class ESTJ {
         while (true) {
             String userStr = scanner.nextLine().trim();
 
-            if (userStr.equals("bye")) {
-                System.out.println(bar);
-                System.out.println("     Bye. Hope to see you again soon!");
-                System.out.println(bar);
-                break;
-            } else if (userStr.equals(("list"))) {
-                System.out.println(bar);
-                if (count == 0) {
-                    System.out.println("     Here are the tasks in your list:");
-                } else {
+            try {
+                if (userStr.equals("bye")) {
+                    System.out.println(bar);
+                    System.out.println("     Bye. Hope to see you again soon!");
+                    System.out.println(bar);
+                    break;
+                } else if (userStr.equals(("list"))) {
+                    System.out.println(bar);
                     System.out.println("     Here are the tasks in your list:");
                     for (int i = 0; i < count; i++) {
                         System.out.println("     " + (i + 1) + "." + tasks[i]);
                     }
-                }
-                System.out.println(bar);
-            } else if (userStr.startsWith("mark ")) {
-                Integer idx = getIndex(userStr.substring(5));
-                if (idx == null || idx < 1 || idx > count) {
-                    break;
-                } else {
+                    System.out.println(bar);
+                } else if (userStr.startsWith("mark ")) {
+                    Integer idx = getIndex(userStr.substring(5));
+                    if (idx == null) {
+                        throw new UserStrException("Invalid task number to mark.");
+                    }
+                    if (idx < 1 || idx > count) {
+                        throw new UserStrException("Task number" + idx + " doesn't exist.");
+                    }
+
                     Task t = tasks[idx - 1];
                     t.markDone();
                     System.out.println(bar);
                     System.out.println("     Nice! I've marked this task as done:");
                     System.out.println("       " + t);
                     System.out.println(bar);
-                }
-            } else if (userStr.startsWith("unmark ")) {
-                Integer idx = getIndex(userStr.substring(7));
-                if (idx == null || idx < 1 || idx > count) {
-                    break;
-                } else {
+                } else if (userStr.startsWith("unmark ")) {
+                    Integer idx = getIndex(userStr.substring(7));
+                    if (idx == null) {
+                        throw new UserStrException("Invalid task number to unmark.");
+                    }
+                    if (idx < 1 || idx > count) {
+                        throw new UserStrException("Task number" + idx + " doesn't exist.");
+                    }
+
                     Task t = tasks[idx - 1];
                     t.markNotDone();
                     System.out.println(bar);
                     System.out.println("     OK, I've marked this task as not done yet:");
                     System.out.println("       " + t);
                     System.out.println(bar);
-                }
-            } else if (userStr.startsWith("todo ")) {
-                String desc = userStr.substring(5).trim();
-                tasks[count] = new Todo(desc);
-                count++;
-                System.out.println(bar);
-                System.out.println("     Got it. I've added this task:");
-                System.out.println("       " + tasks[count - 1]);
-                System.out.println("     Now you have " + count + " tasks in the list.");
-                System.out.println(bar);
-            } else if (userStr.startsWith("deadline ")) {
-                String[] parts = userStr.substring(9).split("/by", 2);
-                if (parts.length < 2) {
-                    break;
-                } else {
+                } else if (userStr.startsWith("todo")) {
+                    String desc = userStr.substring(4).trim();
+                    if (desc.isEmpty()) {
+                        throw new UserStrException("No description for todo task provided.");
+                    }
+                    if (count >= 100) {
+                        throw new UserStrException("Sorry, your task list is full (max 100).");
+                    }
+                    tasks[count] = new Todo(desc);
+                    count++;
+                    System.out.println(bar);
+                    System.out.println("     Got it. I've added this task:");
+                    System.out.println("       " + tasks[count - 1]);
+                    System.out.println("     Now you have " + count + " tasks in the list.");
+                    System.out.println(bar);
+                } else if (userStr.startsWith("deadline")) {
+                    String body = userStr.substring(8).trim();
+                    String[] parts = body.split("/by", 2);
+                    if (parts.length < 2) {
+                        throw new UserStrException("Incorrect format. Use: deadline <description> /by <when>.");
+                    }
                     String desc = parts[0].trim();
                     String by = parts[1].trim();
+                    if (desc.isEmpty()) {
+                        throw new UserStrException("The deadline description cannot be empty.");
+                    }
+                    if (by.isEmpty()) {
+                        throw new UserStrException("Please specify the deadline.");
+                    }
+                    if (count >= 100) {
+                        throw new UserStrException("Sorry, your task list is full (max 100).");
+                    }
                     tasks[count] = new Deadline(desc, by);
                     count++;
                     System.out.println(bar);
@@ -80,16 +98,25 @@ public class ESTJ {
                     System.out.println("       " + tasks[count - 1]);
                     System.out.println("     Now you have " + count + " tasks in the list.");
                     System.out.println(bar);
-                }
-            } else if (userStr.startsWith("event ")) {
-                String[] parts = userStr.substring(6).split("/from", 2);
-                if (parts.length < 2 || !parts[1].contains("/to")) {
-                    break;
-                } else {
+                } else if (userStr.startsWith("event")) {
+                    String body = userStr.substring(5).trim();
+                    String[] parts = body.split("/from", 2);
+                    if (parts.length < 2 || !parts[1].contains("/to")) {
+                        throw new UserStrException("Incorrect format. Use: event <description> /from <start> /to <end>");
+                    }
                     String desc = parts[0].trim();
                     String[] timeParts = parts[1].split("/to", 2);
                     String from = timeParts[0].trim();
                     String to = timeParts[1].trim();
+                    if (desc.isEmpty()) {
+                        throw new UserStrException("The event description cannot be empty.");
+                    }
+                    if (from.isEmpty() || to.isEmpty()) {
+                        throw new UserStrException("Please specify both start and end times.");
+                    }
+                    if (count >= 100) {
+                        throw new UserStrException("Sorry, your task list is full (max 100).");
+                    }
                     tasks[count] = new Event(desc, from, to);
                     count++;
                     System.out.println(bar);
@@ -97,12 +124,12 @@ public class ESTJ {
                     System.out.println("       " + tasks[count - 1]);
                     System.out.println("     Now you have " + count + " tasks in the list.");
                     System.out.println(bar);
+                } else {
+                    throw new UserStrException("Invalid input. Try: todo / deadline / event / list / mark / unmark / bye");
                 }
-            } else if (!userStr.isEmpty()) {
-                tasks[count] = new Task(userStr);
-                count++;
+            } catch (UserStrException e) {
                 System.out.println(bar);
-                System.out.println("     added: " +userStr);
+                System.out.println("     " + e.getMessage());
                 System.out.println(bar);
             }
         }
@@ -187,5 +214,11 @@ class Event extends Task {
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+    }
+}
+
+class UserStrException extends Exception {
+    public UserStrException(String message) {
+        super(message);
     }
 }
