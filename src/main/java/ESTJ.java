@@ -35,7 +35,7 @@ public class ESTJ {
                         throw new UserStrException("Invalid task number to mark.");
                     }
                     if (idx < 1 || idx > count) {
-                        throw new UserStrException("Task number" + idx + " doesn't exist.");
+                        throw new UserStrException("Task number " + idx + " doesn't exist.");
                     }
 
                     Task t = tasks[idx - 1];
@@ -50,7 +50,7 @@ public class ESTJ {
                         throw new UserStrException("Invalid task number to unmark.");
                     }
                     if (idx < 1 || idx > count) {
-                        throw new UserStrException("Task number" + idx + " doesn't exist.");
+                        throw new UserStrException("Task number " + idx + " doesn't exist.");
                     }
 
                     Task t = tasks[idx - 1];
@@ -58,6 +58,25 @@ public class ESTJ {
                     System.out.println(bar);
                     System.out.println("     OK, I've marked this task as not done yet:");
                     System.out.println("       " + t);
+                    System.out.println(bar);
+                } else if (userStr.startsWith("delete ")) {
+                    Integer idx = getIndex(userStr.substring(7));
+                    if (idx == null) {
+                        throw new UserStrException("Invalid task number to delete.");
+                    }
+                    if (idx < 1 || idx > count) {
+                        throw new UserStrException("Task number " + idx + " doesn't exist.");
+                    }
+                    Task removed = tasks[idx - 1];
+                    for (int i = idx; i < count; i++) {
+                        tasks[i - 1] = tasks[i];
+                    }
+                    tasks[count - 1] = null;
+                    count--;
+                    System.out.println(bar);
+                    System.out.println("     Noted. I've removed this task:");
+                    System.out.println("       " + removed);
+                    System.out.println("     Now you have " + count + " tasks in the list.");
                     System.out.println(bar);
                 } else if (userStr.startsWith("todo")) {
                     String desc = userStr.substring(4).trim();
@@ -125,7 +144,7 @@ public class ESTJ {
                     System.out.println("     Now you have " + count + " tasks in the list.");
                     System.out.println(bar);
                 } else {
-                    throw new UserStrException("Invalid input. Try: todo / deadline / event / list / mark / unmark / bye");
+                    throw new UserStrException("Invalid input. Try: todo / deadline / event / list / mark / unmark / delete / bye");
                 }
             } catch (UserStrException e) {
                 System.out.println(bar);
