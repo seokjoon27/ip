@@ -29,7 +29,7 @@ public class ESTJ {
                 } else {
                     System.out.println("     Here are the tasks in your list:");
                     for (int i = 0; i < count; i++) {
-                        System.out.println("     " + (i + 1) + ".[" + tasks[i].getIsDone() + "] " + tasks[i].getTask());
+                        System.out.println("     " + (i + 1) + "." + tasks[i]);
                     }
                 }
                 System.out.println(bar);
@@ -57,7 +57,47 @@ public class ESTJ {
                     System.out.println("       " + t);
                     System.out.println(bar);
                 }
-
+            } else if (userStr.startsWith("todo ")) {
+                String desc = userStr.substring(5).trim();
+                tasks[count] = new Todo(desc);
+                count++;
+                System.out.println(bar);
+                System.out.println("     Got it. I've added this task:");
+                System.out.println("       " + tasks[count - 1]);
+                System.out.println("     Now you have " + count + " tasks in the list.");
+                System.out.println(bar);
+            } else if (userStr.startsWith("deadline ")) {
+                String[] parts = userStr.substring(9).split("/by", 2);
+                if (parts.length < 2) {
+                    break;
+                } else {
+                    String desc = parts[0].trim();
+                    String by = parts[1].trim();
+                    tasks[count] = new Deadline(desc, by);
+                    count++;
+                    System.out.println(bar);
+                    System.out.println("     Got it. I've added this task:");
+                    System.out.println("       " + tasks[count - 1]);
+                    System.out.println("     Now you have " + count + " tasks in the list.");
+                    System.out.println(bar);
+                }
+            } else if (userStr.startsWith("event ")) {
+                String[] parts = userStr.substring(6).split("/from", 2);
+                if (parts.length < 2 || !parts[1].contains("/to")) {
+                    break;
+                } else {
+                    String desc = parts[0].trim();
+                    String[] timeParts = parts[1].split("/to", 2);
+                    String from = timeParts[0].trim();
+                    String to = timeParts[1].trim();
+                    tasks[count] = new Event(desc, from, to);
+                    count++;
+                    System.out.println(bar);
+                    System.out.println("     Got it. I've added this task:");
+                    System.out.println("       " + tasks[count - 1]);
+                    System.out.println("     Now you have " + count + " tasks in the list.");
+                    System.out.println(bar);
+                }
             } else if (!userStr.isEmpty()) {
                 tasks[count] = new Task(userStr);
                 count++;
@@ -106,5 +146,46 @@ class Task {
     @Override
     public String toString() {
         return "[" + getIsDone() + "] " + tsk;
+    }
+}
+
+class Todo extends Task {
+    public Todo(String tsk) {
+        super(tsk);
+    }
+
+    @Override
+    public String toString() {
+        return "[T]" + super.toString();
+    }
+}
+
+class Deadline extends Task {
+    private final String by;
+
+    public Deadline(String tsk, String by) {
+        super(tsk);
+        this.by = by;
+    }
+
+    @Override
+    public String toString() {
+        return "[D]" + super.toString() + " (by: " + by + ")";
+    }
+}
+
+class Event extends Task {
+    private final String from;
+    private final String to;
+
+    public Event(String tsk, String from, String to) {
+        super(tsk);
+        this.from = from;
+        this.to = to;
+    }
+
+    @Override
+    public String toString() {
+        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
 }
