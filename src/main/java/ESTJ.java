@@ -1,5 +1,7 @@
 import java.util.Scanner;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class ESTJ {
     private static final String bar = "  ____________________________________________________________";
@@ -244,20 +246,29 @@ class Todo extends Task {
 }
 
 class Deadline extends Task {
-    private final String by;
+    private final LocalDate by;
 
-    public Deadline(String tsk, String by) {
+    public Deadline(String tsk, String byStr) {
+        super(tsk);
+        this.by = LocalDate.parse(byStr);
+    }
+
+    public Deadline(String tsk, LocalDate by) {
         super(tsk);
         this.by = by;
     }
 
+    public String getByIso() {
+        return by.toString();
+    }
+
     public String getBy() {
-        return this.by;
+        return by.format(DateTimeFormatter.ofPattern("MMM d yyyy"));
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return "[D]" + super.toString() + " (by: " + getBy() + ")";
     }
 }
 
