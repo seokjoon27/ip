@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.nio.file.Paths;
 
 public class ESTJ {
     private static final String bar = "  ____________________________________________________________";
@@ -11,6 +12,13 @@ public class ESTJ {
 
         Task[] tasks = new Task[100];
         int count = 0;
+
+        Storage storage = new Storage(Paths.get("data", "log.txt"));
+        try {
+            count = storage.load(tasks);
+        } catch (Exception e) {
+            System.err.println("[WARN] Unable to load saved tasks: " + e.getMessage());
+        }
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -40,6 +48,10 @@ public class ESTJ {
 
                     Task t = tasks[idx - 1];
                     t.markDone();
+                    try {
+                        storage.save(tasks, count);
+                    } catch (Exception ignore) {}
+
                     System.out.println(bar);
                     System.out.println("     Nice! I've marked this task as done:");
                     System.out.println("       " + t);
@@ -55,6 +67,10 @@ public class ESTJ {
 
                     Task t = tasks[idx - 1];
                     t.markNotDone();
+                    try {
+                        storage.save(tasks, count);
+                    } catch (Exception ignore) {}
+
                     System.out.println(bar);
                     System.out.println("     OK, I've marked this task as not done yet:");
                     System.out.println("       " + t);
@@ -73,6 +89,10 @@ public class ESTJ {
                     }
                     tasks[count - 1] = null;
                     count--;
+                    try {
+                        storage.save(tasks, count);
+                    } catch (Exception ignore) {}
+
                     System.out.println(bar);
                     System.out.println("     Noted. I've removed this task:");
                     System.out.println("       " + removed);
@@ -88,6 +108,10 @@ public class ESTJ {
                     }
                     tasks[count] = new Todo(desc);
                     count++;
+                    try {
+                        storage.save(tasks, count);
+                    } catch (Exception ignore) {}
+
                     System.out.println(bar);
                     System.out.println("     Got it. I've added this task:");
                     System.out.println("       " + tasks[count - 1]);
@@ -112,6 +136,10 @@ public class ESTJ {
                     }
                     tasks[count] = new Deadline(desc, by);
                     count++;
+                    try {
+                        storage.save(tasks, count);
+                    } catch (Exception ignore) {}
+
                     System.out.println(bar);
                     System.out.println("     Got it. I've added this task:");
                     System.out.println("       " + tasks[count - 1]);
@@ -138,6 +166,10 @@ public class ESTJ {
                     }
                     tasks[count] = new Event(desc, from, to);
                     count++;
+                    try {
+                        storage.save(tasks, count);
+                    } catch (Exception ignore) {}
+
                     System.out.println(bar);
                     System.out.println("     Got it. I've added this task:");
                     System.out.println("       " + tasks[count - 1]);
@@ -185,8 +217,13 @@ class Task {
         return (isDone ? "X" : " ");
     }
 
+
+    public boolean IsDone() {
+        return this.isDone;
+    }
+
     public String getTask() {
-        return tsk;
+        return this.tsk;
     }
 
     @Override
@@ -214,6 +251,10 @@ class Deadline extends Task {
         this.by = by;
     }
 
+    public String getBy() {
+        return this.by;
+    }
+
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + by + ")";
@@ -228,6 +269,14 @@ class Event extends Task {
         super(tsk);
         this.from = from;
         this.to = to;
+    }
+
+    public String getFrom() {
+        return this.from;
+    }
+
+    public String getTo() {
+        return this.to;
     }
 
     @Override
