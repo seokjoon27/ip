@@ -177,6 +177,27 @@ public class ESTJ {
                     System.out.println("       " + tasks[count - 1]);
                     System.out.println("     Now you have " + count + " tasks in the list.");
                     System.out.println(bar);
+                } else if (userStr.startsWith("find ")) {
+                    String keyword = userStr.substring(5).trim();
+                    if (keyword.isEmpty()) {
+                        throw new UserStrException("Please provide a keyword. Usage: find <keyword>");
+                    }
+                    String lower = keyword.toLowerCase();
+
+                    System.out.println(bar);
+                    System.out.println("     Here are the matching tasks in your list:");
+                    int shown = 0;
+                    for (int i = 0; i < count; i++) {
+                        Task t = tasks[i];
+                        if (t.getTask().toLowerCase().contains(lower)) {
+                            shown++;
+                            System.out.println("     " + shown + "." + t);
+                        }
+                    }
+                    if (shown == 0) {
+                        System.out.println("     (no matches)");
+                    }
+                    System.out.println(bar);
                 } else {
                     throw new UserStrException("Invalid input. Try: todo / deadline / event / list / mark / unmark / delete / bye");
                 }
