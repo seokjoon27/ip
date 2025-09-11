@@ -7,6 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 
+/**
+ * Controller for the main window.
+ */
 public class MainWindow {
     @FXML private ScrollPane scrollPane;
     @FXML private VBox dialogContainer;
@@ -18,6 +21,11 @@ public class MainWindow {
 
     private Responder estj;
 
+    /**
+     * Wires the window to the responder logic.
+     *
+     * @param estj responder that generates replies
+     */
     public void setEstj(Responder estj) {
         this.estj = estj;
     }

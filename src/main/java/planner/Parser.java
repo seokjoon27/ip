@@ -1,6 +1,15 @@
 package planner;
 
+/**
+ * Parses user input into executable {@link Command} objects.
+ */
 public class Parser {
+    /**
+     * Parses the given line into a {@link Command}.
+     *
+     * @param fullCmd raw line entered by the user
+     * @return a {@link Command} instance
+     */
     public static Command parse(String fullCmd) {
         String[] parts = fullCmd.trim().split("\\s+", 2);
         String cmd = parts[0].toLowerCase();
