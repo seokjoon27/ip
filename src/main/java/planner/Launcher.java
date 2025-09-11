@@ -1,3 +1,5 @@
+package planner;
+
 import javafx.application.Application;
 
 public class Launcher {

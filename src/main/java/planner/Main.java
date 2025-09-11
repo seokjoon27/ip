@@ -1,11 +1,10 @@
+package planner;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import planner.PlannerResponder;
-import planner.Responder;
 
 public class Main extends Application {
     private final Responder estj = new PlannerResponder();
