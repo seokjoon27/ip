@@ -1,3 +1,4 @@
+import planner.Responder;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -14,10 +15,9 @@ public class MainWindow {
     private final Image userImage = new Image(getClass().getResourceAsStream("/images/DaUser.png"));
     private final Image dukeImage = new Image(getClass().getResourceAsStream("/images/DaDuke.png"));
 
-    private ESTJCore estj;
+    private Responder estj;
 
-    /** Inject the bot instance from Main */
-    public void setEstj(ESTJCore estj) {
+    public void setEstj(Responder estj) {
         this.estj = estj;
     }
 
