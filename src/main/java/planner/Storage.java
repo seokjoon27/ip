@@ -85,22 +85,22 @@ public class Storage {
     }
 
     private static Task deserialize(String line) {
-        String[] p = line.split("\\s*\\|\\s*");
-        if (p.length < 3) throw new IllegalArgumentException("Too few fields: " + line);
-        String type = p[0];
-        boolean done = "1".equals(p[1]);
-        String desc = p[2];
+        String[] PIPELINE = line.split("\\s*\\|\\s*");
+        if (PIPELINE.length < 3) throw new IllegalArgumentException("Too few fields: " + line);
+        String type = PIPELINE[0];
+        boolean done = "1".equals(PIPELINE[1]);
+        String desc = PIPELINE[2];
 
         Task t = switch (type) {
             case "T" -> new Todo(desc);
             case "D" -> {
-                if (p.length < 4) throw new IllegalArgumentException("Deadline missing /by");
-                LocalDate by = LocalDate.parse(p[3]);
+                if (PIPELINE.length < 4) throw new IllegalArgumentException("Deadline missing /by");
+                LocalDate by = LocalDate.parse(PIPELINE[3]);
                 yield new Deadline(desc, by);
             }
             case "E" -> {
-                if (p.length < 5) throw new IllegalArgumentException("Event missing /from or /to");
-                yield new Event(desc, p[3], p[4]);
+                if (PIPELINE.length < 5) throw new IllegalArgumentException("Event missing /from or /to");
+                yield new Event(desc, PIPELINE[3], PIPELINE[4]);
             }
             default -> throw new IllegalArgumentException("Unknown type: " + type);
         };

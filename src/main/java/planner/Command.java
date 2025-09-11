@@ -240,6 +240,7 @@ class DeleteCommand extends Command {
         int idx = parseIndex1Based(arg) - 1;
         Task removed = t.remove(idx);
         s.save(t.asList());
-        ui.show("Noted. I've removed this task:\n" + removed + "\nNow you have " + t.size() + " tasks in the list.");
+        ui.show("Noted. I've removed this task:\n" + removed
+                + "\nNow you have " + t.size() + " tasks in the list.");
     }
 }
