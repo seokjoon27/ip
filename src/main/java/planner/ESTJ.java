@@ -1,5 +1,10 @@
 package planner;
 
+/**
+ * Entry point for the text-based interface of the app.
+ * Wires {@link Ui}, {@link Parser}, {@link Command}, {@link TaskList} and {@link Storage}.
+ * Runs the loop until the user exits.
+ */
 public class ESTJ {
     private static final String bar = "  ____________________________________________________________";
 
@@ -7,6 +12,9 @@ public class ESTJ {
     private final TaskList tasks;
     private final Ui ui;
 
+    /**
+     * Creates a CLI instance that persists tasks to the given filepath.
+     */
     public ESTJ() {
         this.ui = new Ui();
         this.storage = new Storage("data/tasks.txt");
@@ -20,6 +28,7 @@ public class ESTJ {
         this.tasks = loaded;
     }
 
+    /** Starts the loop: Loop reads, parses, then executes until the exit command. */
     public void run() {
         ui.showWelcome();
         boolean isExit = false;
@@ -38,6 +47,7 @@ public class ESTJ {
         }
     }
 
+    /** Launches CLI. */
     public static void main(String[] args) {
         new ESTJ().run();
     }

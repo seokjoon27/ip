@@ -1,5 +1,8 @@
 package planner;
 
+/**
+ * A variant of {@link Ui} used for the GUI.
+ */
 public class GuiUi extends Ui {
     private final StringBuilder sb = new StringBuilder();
 
@@ -18,6 +21,11 @@ public class GuiUi extends Ui {
         sb.append(msg).append('\n');
     }
 
+    /**
+     * Returns the accumulated messages and leaves the buffer intact.
+     *
+     * @return concatenated output
+     */
     public String drain() {
         return sb.toString();
     }

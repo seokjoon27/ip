@@ -6,9 +6,17 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * The main entry point for launching the GUI version of the program.
+ */
 public class Main extends Application {
     private final Responder estj = new PlannerResponder();
 
+    /**
+     * Initializes the GUI stage.
+     *
+     * @param stage primary stage supplied
+     */
     @Override
     public void start(Stage stage) {
         try {
@@ -27,6 +35,9 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Launches the application.
+     */
     public static void main(String[] args) {
         launch(args);
     }
