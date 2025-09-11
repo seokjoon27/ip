@@ -4,8 +4,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import planner.PlannerResponder;
+import planner.Responder;
+
 public class Main extends Application {
-    private final ESTJCore estj = new ESTJCore();
+    private final Responder estj = new PlannerResponder();
 
     @Override
     public void start(Stage stage) {

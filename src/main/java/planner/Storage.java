@@ -1,3 +1,5 @@
+package planner;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -8,14 +10,48 @@ import java.time.LocalDate;
 public class Storage {
     private final Path file;
 
-    Storage(Path file) {
+    public Storage(String filePath) {
+        this(Paths.get(filePath));
+    }
+
+    public Storage(Path file) {
         this.file = file;
     }
 
-    int load(Task[] tasks) throws IOException {
-        if (!Files.exists(file)) {
-            return 0;
+    public List<Task> load() throws IOException {
+        List<Task> list = new ArrayList<>();
+        if (!Files.exists(file)) return list;
+
+        List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+        for (String raw : lines) {
+            if (raw == null) continue;
+            String line = raw.trim();
+            if (line.isEmpty()) continue;
+            try {
+                Task t = deserialize(line);
+                if (t != null) list.add(t);
+            } catch (IllegalArgumentException ex) {
+                System.err.println("[WARN] Skipping corrupted line: " + line);
+            }
         }
+        return list;
+    }
+
+    public void save(List<Task> tasks) throws IOException {
+        if (file.getParent() != null) {
+            Files.createDirectories(file.getParent());
+        }
+        List<String> lines = new ArrayList<>(tasks.size());
+        for (Task t : tasks) {
+            lines.add(serialize(t));
+        }
+        Files.write(file, lines, StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    private int loadIntoArray(Task[] out) throws IOException {
+        if (!Files.exists(file)) return 0;
         List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
         int count = 0;
         for (String raw : lines) {
@@ -24,9 +60,7 @@ public class Storage {
             if (line.isEmpty()) continue;
             try {
                 Task t = deserialize(line);
-                if (t != null && count < tasks.length) {
-                    tasks[count++] = t;
-                }
+                if (t != null && count < out.length) out[count++] = t;
             } catch (IllegalArgumentException ex) {
                 System.err.println("[WARN] Skipping corrupted line: " + line);
             }
@@ -34,7 +68,7 @@ public class Storage {
         return count;
     }
 
-    void save(Task[] tasks, int count) throws IOException {
+    private void saveFromArray(Task[] tasks, int count) throws IOException {
         if (file.getParent() != null) {
             Files.createDirectories(file.getParent());
         }
@@ -48,7 +82,7 @@ public class Storage {
     }
 
     private static String serialize(Task t) {
-        String done = t.IsDone() ? "1" : "0";
+        String done = t.isDone() ? "1" : "0";
         if (t instanceof Todo) {
             return String.join(" | ", "T", done, ((Todo) t).getTask());
         } else if (t instanceof Deadline) {
