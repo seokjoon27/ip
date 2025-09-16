@@ -163,7 +163,9 @@ class AddDeadlineCommand extends Command {
     /**
      * @param a raw argument string
      */
-    AddDeadlineCommand(String a) { this.args = a; }
+    AddDeadlineCommand(String a) {
+        this.args = a;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -222,6 +224,7 @@ class AddEventCommand extends Command {
  */
 class MarkCommand extends Command {
     private final String arg;
+
     /**
      * @param a 1-based index argument
      */
@@ -275,7 +278,9 @@ class DeleteCommand extends Command {
     /**
      * @param a 1-based index argument
      */
-    DeleteCommand(String a) { this.arg = a; }
+    DeleteCommand(String a) {
+        this.arg = a;
+    }
 
     /** {@inheritDoc} */
     @Override

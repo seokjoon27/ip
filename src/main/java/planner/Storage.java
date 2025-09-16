@@ -43,7 +43,9 @@ public class Storage {
      */
     public List<Task> load() throws IOException {
         List<Task> list = new ArrayList<>();
-        if (!Files.exists(file)) return list;
+        if (!Files.exists(file)) {
+            return list;
+        }
 
         List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
         for (String raw : lines) {

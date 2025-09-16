@@ -9,6 +9,7 @@ public class GuiUi extends Ui {
     @Override public void showWelcome() {
 
     }
+
     @Override public void showLine()    {
 
     }
