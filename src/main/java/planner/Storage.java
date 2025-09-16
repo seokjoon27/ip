@@ -6,6 +6,7 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * Handles reading and writing tasks to a UTF-8 text file using a simple pipe-separated format.
@@ -34,22 +35,21 @@ public class Storage {
      * @throws java.io.IOException if reading fails
      */
     public List<Task> load() throws IOException {
-        List<Task> list = new ArrayList<>();
-        if (!Files.exists(file)) return list;
-
-        List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
-        for (String raw : lines) {
-            if (raw == null) continue;
-            String line = raw.trim();
-            if (line.isEmpty()) continue;
-            try {
-                Task t = deserialize(line);
-                if (t != null) list.add(t);
-            } catch (IllegalArgumentException ex) {
-                System.err.println("[WARN] Skipping corrupted line: " + line);
-            }
-        }
-        return list;
+        if (!Files.exists(file)) return new ArrayList<>();
+        return Files.readAllLines(file, StandardCharsets.UTF_8).stream()
+                .filter(java.util.Objects::nonNull)
+                .map(String::trim)
+                .filter(line -> !line.isEmpty())
+                .map(line -> {
+                    try {
+                        return deserialize(line);
+                    } catch (IllegalArgumentException ex) {
+                        System.err.println("[WARN] Skipping corrupted line: " + line);
+                        return null;
+                    }
+                })
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

@@ -1,5 +1,8 @@
 package planner;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 /**
  * Represents an executable user command.
  * Subclasses implement the behavior in {@link #execute(TaskList, Ui, Storage)}.
@@ -63,12 +66,14 @@ class ListCommand extends Command {
     @Override
     public void execute(TaskList t, Ui ui, Storage s) {
         assert t != null && ui != null : "dependencies must not be null";
-        if (t.size() == 0) { ui.show("No tasks yet."); return; }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < t.size(); i++) {
-            sb.append(i + 1).append(". ").append(t.get(i)).append('\n');
+        if (t.size() == 0) {
+            ui.show("No tasks yet.");
+            return;
         }
-        ui.show(sb.toString().trim());
+        String list = IntStream.range(0, t.size())
+                .mapToObj(i -> (i + 1) + ". " + t.get(i))
+                .collect(Collectors.joining("\n"));
+        ui.show(list);
     }
 }
 
