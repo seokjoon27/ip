@@ -1,0 +1,60 @@
+name: Java CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mark repo as safe for git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory '*'
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '17'
+
+      - name: Print Java/Gradle versions
+        run: |
+          java -version
+          ./gradlew -v
+
+      - name: Run Gradle checks (compile + test + checkstyle)
+        run: ./gradlew --no-daemon clean check --stacktrace --info
+
+      - name: Install dos2unix on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y dos2unix
+
+      - name: Install dos2unix on macOS
+        if: runner.os == 'macOS'
+        run: brew install dos2unix
+
+      - name: Text UI test (*NIX/macOS)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        working-directory: ${{ github.workspace }}/text-ui-test
+        run: ./runtest.sh
+
+      - name: Text UI test (Windows)
+        if: runner.os == 'Windows'
+        working-directory: ${{ github.workspace }}/text-ui-test
+        shell: cmd
+        run: runtest.bat

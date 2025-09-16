@@ -43,12 +43,16 @@ public class Ui {
      *
      * @param s message to print
      */
-    public void show(String s) { System.out.println(s); }
+    public void show(String s) {
+        System.out.println(s);
+    }
 
     /**
      * Prints an error message.
      *
      * @param msg the error messages to show
      */
-    public void showError(String msg) { System.out.println(msg); }
+    public void showError(String msg) {
+        System.out.println(msg);
+    }
 }

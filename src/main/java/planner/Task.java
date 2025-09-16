@@ -5,6 +5,7 @@ package planner;
  */
 public class Task {
     private final String tsk;
+
     private boolean isDone;
 
     /**

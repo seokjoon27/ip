@@ -20,7 +20,9 @@ public abstract class Command {
      *
      * @return true if the program should exit
      */
-    public boolean isExit() { return false; }
+    public boolean isExit() {
+        return false;
+    }
 
     /**
      * Parses a 1-based integer index from user input.
@@ -52,7 +54,9 @@ class ExitCommand extends Command {
     }
 
     /** {@inheritDoc} */
-    @Override public boolean isExit() { return true; }
+    @Override public boolean isExit() {
+        return true;
+    }
 }
 
 /**
@@ -63,7 +67,9 @@ class ListCommand extends Command {
     @Override
     public void execute(TaskList t, Ui ui, Storage s) {
         assert t != null && ui != null : "dependencies must not be null";
-        if (t.size() == 0) { ui.show("No tasks yet."); return; }
+        if (t.size() == 0) {
+            ui.show("No tasks yet."); return;
+        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < t.size(); i++) {
             sb.append(i + 1).append(". ").append(t.get(i)).append('\n');
@@ -83,7 +89,9 @@ class UnknownCommand extends Command {
      *
      * @param r the raw user input
      */
-    UnknownCommand(String r) { this.raw = r; }
+    UnknownCommand(String r) {
+        this.raw = r;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -102,13 +110,17 @@ class AddCommand extends Command {
     /**
      * @param d description of the task
      */
-    AddCommand(String d) { this.desc = d; }
+    AddCommand(String d) {
+        this.desc = d;
+    }
 
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) throws Exception {
         assert t != null && ui != null && s != null : "dependencies must not be null";
-        if (desc == null || desc.isBlank()) throw new Exception("Description cannot be empty.");
+        if (desc == null || desc.isBlank()) {
+            throw new Exception("Description cannot be empty.");
+        }
         Task task = new Task(desc);
         t.add(task);
         s.save(t.asList());
@@ -125,12 +137,16 @@ class AddTodoCommand extends Command {
     /**
      * @param d description of the todo
      */
-    AddTodoCommand(String d) { this.desc = d; }
+    AddTodoCommand(String d) {
+        this.desc = d;
+    }
 
     /** {@inheritDoc} */
     @Override public void execute(TaskList t, Ui ui, Storage s) throws Exception {
         assert t != null && ui != null && s != null : "dependencies must not be null";
-        if (desc == null || desc.isBlank()) throw new Exception("The description of a todo cannot be empty.");
+        if (desc == null || desc.isBlank()) {
+            throw new Exception("The description of a todo cannot be empty.");
+        }
         Task task = new Todo(desc);
         t.add(task);
         s.save(t.asList());
@@ -147,7 +163,9 @@ class AddDeadlineCommand extends Command {
     /**
      * @param a raw argument string
      */
-    AddDeadlineCommand(String a) { this.args = a; }
+    AddDeadlineCommand(String a) {
+        this.args = a;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -176,7 +194,9 @@ class AddEventCommand extends Command {
     /**
      * @param a raw argument string
      */
-    AddEventCommand(String a) { this.args = a; }
+    AddEventCommand(String a) {
+        this.args = a;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -185,9 +205,13 @@ class AddEventCommand extends Command {
         assert args != null : "args must not be null";
 
         String[] pFrom = args.split("\\s+/from\\s+", 2);
-        if (pFrom.length < 2 || pFrom[0].isBlank()) throw new Exception("Usage: event <description> /from <start> /to <end>");
+        if (pFrom.length < 2 || pFrom[0].isBlank()) {
+            throw new Exception("Usage: event <description> /from <start> /to <end>");
+        }
         String[] pTo = pFrom[1].split("\\s+/to\\s+", 2);
-        if (pTo.length < 2 || pTo[0].isBlank() || pTo[1].isBlank()) throw new Exception("Usage: event <description> /from <start> /to <end>");
+        if (pTo.length < 2 || pTo[0].isBlank() || pTo[1].isBlank()) {
+            throw new Exception("Usage: event <description> /from <start> /to <end>");
+        }
         Task task = new Event(pFrom[0].trim(), pTo[0].trim(), pTo[1].trim());
         t.add(task);
         s.save(t.asList());
@@ -200,10 +224,13 @@ class AddEventCommand extends Command {
  */
 class MarkCommand extends Command {
     private final String arg;
+
     /**
      * @param a 1-based index argument
      */
-    MarkCommand(String a) { this.arg = a; }
+    MarkCommand(String a) {
+        this.arg = a;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -226,7 +253,9 @@ class UnmarkCommand extends Command {
     /**
      * @param a 1-based index argument
      */
-    UnmarkCommand(String a) { this.arg = a; }
+    UnmarkCommand(String a) {
+        this.arg = a;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -249,7 +278,9 @@ class DeleteCommand extends Command {
     /**
      * @param a 1-based index argument
      */
-    DeleteCommand(String a) { this.arg = a; }
+    DeleteCommand(String a) {
+        this.arg = a;
+    }
 
     /** {@inheritDoc} */
     @Override

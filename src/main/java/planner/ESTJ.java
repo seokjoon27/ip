@@ -6,8 +6,11 @@ package planner;
  * Runs the loop until the user exits.
  */
 public class ESTJ {
+
     private final Storage storage;
+
     private final TaskList tasks;
+
     private final Ui ui;
 
     /**

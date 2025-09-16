@@ -6,8 +6,13 @@ package planner;
 public class GuiUi extends Ui {
     private final StringBuilder sb = new StringBuilder();
 
-    @Override public void showWelcome() {}
-    @Override public void showLine()    {}
+    @Override public void showWelcome() {
+
+    }
+
+    @Override public void showLine()    {
+
+    }
 
     @Override public void showBye() {
         sb.append("Bye. Hope to see you again soon!\n");
