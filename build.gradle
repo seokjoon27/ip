@@ -5,16 +5,16 @@ plugins {
     id 'checkstyle'
 }
 
+checkstyle {
+    toolVersion = '10.12.4'
+}
+
 tasks.withType(Checkstyle).configureEach {
     configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
     configProperties = [
             'checkstyle.suppressions.file': "$rootDir/config/checkstyle/suppressions.xml"
     ]
     classpath = files()
-}
-
-checkstyle {
-    toolVersion = '10.12.4'
 }
 
 repositories {

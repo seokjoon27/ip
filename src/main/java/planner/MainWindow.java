@@ -12,11 +12,15 @@ import javafx.scene.layout.VBox;
  */
 public class MainWindow {
     @FXML private ScrollPane scrollPane;
+
     @FXML private VBox dialogContainer;
+
     @FXML private TextField userInput;
+
     @FXML private Button sendButton;
 
     private final Image userImage = new Image(getClass().getResourceAsStream("/images/DaUser.png"));
+
     private final Image dukeImage = new Image(getClass().getResourceAsStream("/images/DaDuke.png"));
 
     private Responder estj;
@@ -30,6 +34,10 @@ public class MainWindow {
         this.estj = estj;
     }
 
+    /**
+     * Initializes the logic
+     *
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
@@ -38,7 +46,9 @@ public class MainWindow {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        if (input == null || input.isBlank()) return;
+        if (input == null || input.isBlank()) {
+            return;
+        }
 
         String reply;
         try {

@@ -2,7 +2,10 @@ package planner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
@@ -22,6 +25,11 @@ public class Storage {
         this(Paths.get(filePath));
     }
 
+    /**
+     * Creates a storage that reads and writes at the given path.
+     *
+     * @param file path to the save file
+     */
     public Storage(Path file) {
         assert file != null : "storage path must not be null";
         this.file = file;
@@ -39,12 +47,18 @@ public class Storage {
 
         List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
         for (String raw : lines) {
-            if (raw == null) continue;
+            if (raw == null) {
+                continue;
+            }
             String line = raw.trim();
-            if (line.isEmpty()) continue;
+            if (line.isEmpty()) {
+                continue;
+            }
             try {
                 Task t = deserialize(line);
-                if (t != null) list.add(t);
+                if (t != null) {
+                    list.add(t);
+                }
             } catch (IllegalArgumentException ex) {
                 System.err.println("[WARN] Skipping corrupted line: " + line);
             }
@@ -90,7 +104,9 @@ public class Storage {
 
     private static Task deserialize(String line) {
         String[] PIPELINE = line.split("\\s*\\|\\s*");
-        if (PIPELINE.length < 3) throw new IllegalArgumentException("Too few fields: " + line);
+        if (PIPELINE.length < 3) {
+            throw new IllegalArgumentException("Too few fields: " + line);
+        }
         String type = PIPELINE[0];
         boolean done = "1".equals(PIPELINE[1]);
         String desc = PIPELINE[2];
@@ -98,17 +114,23 @@ public class Storage {
         Task t = switch (type) {
             case "T" -> new Todo(desc);
             case "D" -> {
-                if (PIPELINE.length < 4) throw new IllegalArgumentException("Deadline missing /by");
+                if (PIPELINE.length < 4) {
+                    throw new IllegalArgumentException("Deadline missing /by");
+                }
                 LocalDate by = LocalDate.parse(PIPELINE[3]);
                 yield new Deadline(desc, by);
             }
             case "E" -> {
-                if (PIPELINE.length < 5) throw new IllegalArgumentException("Event missing /from or /to");
+                if (PIPELINE.length < 5) {
+                    throw new IllegalArgumentException("Event missing /from or /to");
+                }
                 yield new Event(desc, PIPELINE[3], PIPELINE[4]);
             }
             default -> throw new IllegalArgumentException("Unknown type: " + type);
         };
-        if (done) t.markDone();
+        if (done) {
+            t.markDone();
+        }
         return t;
     }
 }
