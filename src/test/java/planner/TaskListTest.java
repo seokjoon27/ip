@@ -2,10 +2,17 @@ package planner;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests for {@link TaskList}.
+ * Verifies basic add/remove behaviors and storage semantics.
+ */
 public class TaskListTest {
 
+    /**
+     * Ensures {@code add()} increases the size and stores the exact task instance.
+     */
     @Test
     public void add_increasesSizeAndStoresTask() {
         TaskList list = new TaskList();
@@ -16,6 +23,10 @@ public class TaskListTest {
         assertEquals(t, list.get(0));
     }
 
+    /**
+     * Ensures {@code remove(index)} returns the removed task
+     * and the list size decreases accordingly.
+     */
     @Test
     public void remove_decreasesSizeAndReturnsTask() {
         TaskList list = new TaskList();
