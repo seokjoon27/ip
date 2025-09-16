@@ -23,6 +23,7 @@ public class Storage {
     }
 
     public Storage(Path file) {
+        assert file != null : "storage path must not be null";
         this.file = file;
     }
 
@@ -58,11 +59,13 @@ public class Storage {
      * @throws java.io.IOException if writing fails
      */
     public void save(List<Task> tasks) throws IOException {
+        assert tasks != null : "tasks list must not be null";
         if (file.getParent() != null) {
             Files.createDirectories(file.getParent());
         }
         List<String> lines = new ArrayList<>(tasks.size());
         for (Task t : tasks) {
+            assert t != null : "tasks element must not be null";
             lines.add(serialize(t));
         }
         Files.write(file, lines, StandardCharsets.UTF_8,
@@ -71,6 +74,7 @@ public class Storage {
     }
 
     private static String serialize(Task t) {
+        assert t != null : "task must not be null";
         String done = t.isDone() ? "1" : "0";
         if (t instanceof Todo) {
             return String.join(" | ", "T", done, ((Todo) t).getTask());

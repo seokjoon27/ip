@@ -35,6 +35,7 @@ public class TaskList {
 
     /** Adds a task to the end of the list. */
     public void add(Task t) {
+        assert t != null : "task to add must not be null";
         tasks.add(t);
     }
 
@@ -45,6 +46,7 @@ public class TaskList {
      * @return the task
      */
     public Task get(int i) {
+        assert i >= 0 && i < tasks.size() : "get index out of bounds";
         return tasks.get(i);
     }
 
@@ -55,6 +57,7 @@ public class TaskList {
      * @return removed task
      */
     public Task remove(int i) {
+        assert i >= 0 && i < tasks.size() : "remove index out of bounds";
         return tasks.remove(i);
     }
 }

@@ -11,7 +11,11 @@ public class Parser {
      * @return a {@link Command} instance
      */
     public static Command parse(String fullCmd) {
+        assert fullCmd != null : "fullCmd must not be null";
+
         String[] parts = fullCmd.trim().split("\\s+", 2);
+        assert parts.length >= 1 : "parser failed to split command";
+
         String cmd = parts[0].toLowerCase();
         String args = (parts.length > 1) ? parts[1] : "";
 
