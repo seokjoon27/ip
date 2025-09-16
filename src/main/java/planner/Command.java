@@ -30,9 +30,10 @@ public abstract class Command {
      * @throws Exception if parsing fails or index is negative
      */
     static int parseIndex1Based(String arg) throws Exception {
+        assert arg != null : "index argument must not be null";
         try {
             int idx = Integer.parseInt(arg.trim());
-            if (idx <= 0) throw new NumberFormatException();
+            assert idx > 0 : "index must be positive";
             return idx;
         } catch (NumberFormatException e) {
             throw new Exception("Please provide a valid positive index.");
@@ -45,7 +46,10 @@ public abstract class Command {
  */
 class ExitCommand extends Command {
     /** {@inheritDoc} */
-    @Override public void execute(TaskList t, Ui ui, Storage s) { ui.showBye(); }
+    @Override public void execute(TaskList t, Ui ui, Storage s) {
+        assert ui != null : "Ui must not be null";
+        ui.showBye();
+    }
 
     /** {@inheritDoc} */
     @Override public boolean isExit() { return true; }
@@ -58,6 +62,7 @@ class ListCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) {
+        assert t != null && ui != null : "dependencies must not be null";
         if (t.size() == 0) { ui.show("No tasks yet."); return; }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < t.size(); i++) {
@@ -83,6 +88,7 @@ class UnknownCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) {
+        assert ui != null : "Ui must not be null";
         ui.show("Unknown command: " + raw);
     }
 }
@@ -101,6 +107,7 @@ class AddCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null && s != null : "dependencies must not be null";
         if (desc == null || desc.isBlank()) throw new Exception("Description cannot be empty.");
         Task task = new Task(desc);
         t.add(task);
@@ -122,6 +129,7 @@ class AddTodoCommand extends Command {
 
     /** {@inheritDoc} */
     @Override public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null && s != null : "dependencies must not be null";
         if (desc == null || desc.isBlank()) throw new Exception("The description of a todo cannot be empty.");
         Task task = new Todo(desc);
         t.add(task);
@@ -144,10 +152,14 @@ class AddDeadlineCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null && s != null : "dependencies must not be null";
+        assert args != null : "args must not be null";
+
         String[] split = args.split("\\s+/by\\s+", 2);
         if (split.length < 2 || split[0].isBlank() || split[1].isBlank()) {
             throw new Exception("Usage: deadline <description> /by <yyyy-MM-dd>");
         }
+
         Task task = new Deadline(split[0].trim(), split[1].trim());
         t.add(task);
         s.save(t.asList());
@@ -169,6 +181,9 @@ class AddEventCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null && s != null : "dependencies must not be null";
+        assert args != null : "args must not be null";
+
         String[] pFrom = args.split("\\s+/from\\s+", 2);
         if (pFrom.length < 2 || pFrom[0].isBlank()) throw new Exception("Usage: event <description> /from <start> /to <end>");
         String[] pTo = pFrom[1].split("\\s+/to\\s+", 2);
@@ -193,6 +208,7 @@ class MarkCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null && s != null : "dependencies must not be null";
         int idx = parseIndex1Based(arg) - 1;
         Task task = t.get(idx);
         task.markDone();
@@ -215,6 +231,7 @@ class UnmarkCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null && s != null : "dependencies must not be null";
         int idx = parseIndex1Based(arg) - 1;
         Task task = t.get(idx);
         task.markNotDone();
@@ -237,6 +254,7 @@ class DeleteCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null && s != null : "dependencies must not be null";
         int idx = parseIndex1Based(arg) - 1;
         Task removed = t.remove(idx);
         s.save(t.asList());
