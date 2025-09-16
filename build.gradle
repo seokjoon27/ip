@@ -8,17 +8,28 @@ repositories {
     mavenCentral()
 }
 
+def osName = System.getProperty("os.name").toLowerCase()
+def arch = System.getProperty("os.arch").toLowerCase()
+
+def javafxPlatform = (
+        osName.contains('mac')   ? (arch.contains('aarch64') || arch.contains('arm') ? 'mac-aarch64' : 'mac') :
+                osName.contains('win') ? 'win' :
+                                         'linux'
+)
+
 dependencies {
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
+    implementation "org.openjfx:javafx-controls:17:${javafxPlatform}"
+    implementation "org.openjfx:javafx-fxml:17:${javafxPlatform}"
+    implementation "org.openjfx:javafx-graphics:17:${javafxPlatform}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly  'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 }
 
 test {
     useJUnitPlatform()
-
     testLogging {
         events "passed", "skipped", "failed"
-
         showExceptions true
         exceptionFormat "full"
         showCauses true
@@ -35,6 +46,6 @@ shadowJar {
     archiveFileName = 'ip.jar'
 }
 
-run{
+run {
     standardInput = System.in
 }
