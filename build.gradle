@@ -2,40 +2,32 @@ plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'checkstyle'
 }
 
 repositories {
     mavenCentral()
 }
 
-def osName = System.getProperty("os.name").toLowerCase()
-def arch = System.getProperty("os.arch").toLowerCase()
-
-def javafxPlatform = (
-        osName.contains('mac')   ? (arch.contains('aarch64') || arch.contains('arm') ? 'mac-aarch64' : 'mac') :
-                osName.contains('win') ? 'win' :
-                                         'linux'
-)
+def os = org.gradle.internal.os.OperatingSystem.current()
+def platform = os.isMacOsX() ? "mac-aarch64" : (os.isLinux() ? "linux" : "win")
 
 dependencies {
-    implementation "org.openjfx:javafx-controls:17:${javafxPlatform}"
-    implementation "org.openjfx:javafx-fxml:17:${javafxPlatform}"
-    implementation "org.openjfx:javafx-graphics:17:${javafxPlatform}"
+    implementation "org.openjfx:javafx-base:17:${platform}"
+    implementation "org.openjfx:javafx-graphics:17:${platform}"
+    implementation "org.openjfx:javafx-controls:17:${platform}"
+    implementation "org.openjfx:javafx-fxml:17:${platform}"
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly  'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 }
 
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(17) }
+}
+
 test {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        showExceptions true
-        exceptionFormat "full"
-        showCauses true
-        showStackTraces true
-        showStandardStreams = false
-    }
 }
 
 application {
