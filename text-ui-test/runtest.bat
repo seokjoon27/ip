@@ -23,7 +23,13 @@ if %errorlevel%==0 (
   echo [runtest] JavaFX NOT found ^> compiling HEADLESS core only (exclude GUI classes)
   > "%ROOT_DIR%.sources.txt" (
     for /f "delims=" %%f in ('dir /s /b "%SRC_DIR%\*.java"') do (
-      echo %%~nxf | findstr /i /x "Main.java Launcher.java MainWindow.java DialogBox.java GuiUi.java" >nul || echo %%f
+      rem
+      echo %%~nxf | findstr /i /x "Main.java Launcher.java MainWindow.java DialogBox.java GuiUi.java" >nul
+      if errorlevel 1 (
+        rem
+        findstr /M /I /C:"GuiUi" /C:"javafx." "%%f" >nul
+        if errorlevel 1 echo %%f
+      )
     )
   )
   javac -Xlint:none -encoding UTF-8 -d "%OUT_DIR%" @"%ROOT_DIR%.sources.txt"

@@ -18,13 +18,12 @@ if compgen -G "$FX_LIB/javafx*.jar" > /dev/null; then
         -Xlint:none -encoding UTF-8 -d "$OUT_DIR" @"$ROOT_DIR/.sources.txt"
 else
   echo "[runtest] JavaFX NOT found -> compiling HEADLESS core only (exclude GUI classes)"
+  EXCLUDE_NAMES="Main.java|Launcher.java|MainWindow.java|DialogBox.java|GuiUi.java"
   find "$SRC_DIR" -name "*.java" \
-    ! -name "Main.java" \
-    ! -name "Launcher.java" \
-    ! -name "MainWindow.java" \
-    ! -name "DialogBox.java" \
-    ! -name "GuiUi.java" \
-    > "$ROOT_DIR/.sources.txt"
+    ! -regex ".*\(${EXCLUDE_NAMES}\)$" -print0 \
+  | xargs -0 grep -L -E 'GuiUi|javafx\.' \
+  > "$ROOT_DIR/.sources.txt"
+
   javac -Xlint:none -encoding UTF-8 -d "$OUT_DIR" @"$ROOT_DIR/.sources.txt"
 fi
 
