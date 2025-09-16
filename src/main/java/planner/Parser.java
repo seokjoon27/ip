@@ -1,9 +1,17 @@
 package planner;
 
+import java.util.Locale;
+
 /**
  * Parses user input into executable {@link Command} objects.
  */
 public class Parser {
+    private static final int SPLIT_LIMIT = 2;
+
+    private static String[] splitOnce(String s) {
+        return s.trim().split("\\s+", SPLIT_LIMIT);
+    }
+
     /**
      * Parses the given line into a {@link Command}.
      *
@@ -13,33 +21,31 @@ public class Parser {
     public static Command parse(String fullCmd) {
         assert fullCmd != null : "fullCmd must not be null";
 
-        String[] parts = fullCmd.trim().split("\\s+", 2);
-        assert parts.length >= 1 : "parser failed to split command";
-
-        String cmd = parts[0].toLowerCase();
+        String[] parts = splitOnce(fullCmd);
+        String cmd = parts[0].toLowerCase(Locale.ROOT);
         String args = (parts.length > 1) ? parts[1] : "";
 
         switch (cmd) {
-            case "bye":
-                return new ExitCommand();
-            case "list":
-                return new ListCommand();
-            case "todo":
-                return new AddTodoCommand(args);
-            case "deadline":
-                return new AddDeadlineCommand(args);
-            case "event":
-                return new AddEventCommand(args);
-            case "mark":
-                return new MarkCommand(args);
-            case "unmark":
-                return new UnmarkCommand(args);
-            case "delete":
-                return new DeleteCommand(args);
-            case "add":
-                return new AddCommand(args);
-            default:
-                return new UnknownCommand(fullCmd);
+        case "bye":
+            return new ExitCommand();
+        case "list":
+            return new ListCommand();
+        case "todo":
+            return new AddTodoCommand(args);
+        case "deadline":
+            return new AddDeadlineCommand(args);
+        case "event":
+            return new AddEventCommand(args);
+        case "mark":
+            return new MarkCommand(args);
+        case "unmark":
+            return new UnmarkCommand(args);
+        case "delete":
+            return new DeleteCommand(args);
+        case "add":
+            return new AddCommand(args);
+        default:
+            return new UnknownCommand(fullCmd);
         }
     }
 }

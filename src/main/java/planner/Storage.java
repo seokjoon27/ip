@@ -6,12 +6,15 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 
 /**
  * Handles reading and writing tasks to a UTF-8 text file using a simple pipe-separated format.
  */
 public class Storage {
     private final Path file;
+    private static final String SEP = " | ";
+    private static final Pattern SEP_SPLIT = Pattern.compile("\\s*\\|\\s*");
 
     /**
      * Creates a storage that reads and writes at the given path.
@@ -74,37 +77,36 @@ public class Storage {
     }
 
     private static String serialize(Task t) {
-        assert t != null : "task must not be null";
         String done = t.isDone() ? "1" : "0";
         if (t instanceof Todo) {
-            return String.join(" | ", "T", done, ((Todo) t).getTask());
+            return String.join(SEP, "T", done, ((Todo) t).getTask());
         } else if (t instanceof Deadline) {
             Deadline d = (Deadline) t;
-            return String.join(" | ", "D", done, d.getTask(), d.getByIso());
+            return String.join(SEP, "D", done, d.getTask(), d.getByIso());
         } else if (t instanceof Event) {
             Event e = (Event) t;
-            return String.join(" | ", "E", done, e.getTask(), e.getFrom(), e.getTo());
+            return String.join(SEP, "E", done, e.getTask(), e.getFrom(), e.getTo());
         }
         throw new IllegalArgumentException("Unknown task type: " + t.getClass());
     }
 
     private static Task deserialize(String line) {
-        String[] PIPELINE = line.split("\\s*\\|\\s*");
-        if (PIPELINE.length < 3) throw new IllegalArgumentException("Too few fields: " + line);
-        String type = PIPELINE[0];
-        boolean done = "1".equals(PIPELINE[1]);
-        String desc = PIPELINE[2];
+        String[] p = SEP_SPLIT.split(line);
+        if (p.length < 3) throw new IllegalArgumentException("Too few fields: " + line);
+        String type = p[0];
+        boolean done = "1".equals(p[1]);
+        String desc = p[2];
 
         Task t = switch (type) {
             case "T" -> new Todo(desc);
             case "D" -> {
-                if (PIPELINE.length < 4) throw new IllegalArgumentException("Deadline missing /by");
-                LocalDate by = LocalDate.parse(PIPELINE[3]);
+                if (p.length < 4) throw new IllegalArgumentException("Deadline missing /by");
+                LocalDate by = LocalDate.parse(p[3]);
                 yield new Deadline(desc, by);
             }
             case "E" -> {
-                if (PIPELINE.length < 5) throw new IllegalArgumentException("Event missing /from or /to");
-                yield new Event(desc, PIPELINE[3], PIPELINE[4]);
+                if (p.length < 5) throw new IllegalArgumentException("Event missing /from or /to");
+                yield new Event(desc, p[3], p[4]);
             }
             default -> throw new IllegalArgumentException("Unknown type: " + type);
         };
