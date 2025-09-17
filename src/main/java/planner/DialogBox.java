@@ -23,6 +23,17 @@ public class DialogBox extends HBox {
 
     @FXML private ImageView displayPicture;
 
+    @FXML
+    private void initialize() {
+        dialog.setWrapText(true);
+        dialog.getStyleClass().add("dialog-text");
+        this.getStyleClass().add("dialog-box");
+
+        if (displayPicture != null) {
+            displayPicture.getStyleClass().add("dialog-avatar");
+        }
+    }
+
     private DialogBox(String text, Image img) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
@@ -51,7 +62,10 @@ public class DialogBox extends HBox {
      * @return a dialog box node to insert into the chat container
      */
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        DialogBox db = new DialogBox(text, img);
+        db.getStyleClass().add("user");
+        db.flip();
+        return db;
     }
 
     /**
@@ -62,8 +76,8 @@ public class DialogBox extends HBox {
      * @return a dialog box node to insert into the chat container
      */
     public static DialogBox getDukeDialog(String text, Image img) {
-        var db = new DialogBox(text, img);
-        db.flip();
+        DialogBox db = new DialogBox(text, img);
+        db.getStyleClass().add("program");
         return db;
     }
 }
