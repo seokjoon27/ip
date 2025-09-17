@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# AI-assisted note (A-AiAssisted):
+# Used AI to learn runtest.sh file languages and PR text.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"

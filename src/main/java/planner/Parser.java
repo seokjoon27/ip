@@ -25,6 +25,12 @@ public class Parser {
         String cmd = parts[0].toLowerCase(Locale.ROOT);
         String args = (parts.length > 1) ? parts[1] : "";
 
+        /*
+         * AI-assisted note (A-AiAssisted):
+         * Asked an AI which B/C/D extension best fits this codebase and decided on
+         * B-DoWithinPeriodTasks. Implementation details and tests are by the author.
+         * See AI.md for a brief log.
+         */
         switch (cmd) {
             case "bye":
                 return new ExitCommand();
