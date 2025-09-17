@@ -1,1 +1,2 @@
 T | 0 | read
+T | 1 | sleep

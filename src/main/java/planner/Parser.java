@@ -26,26 +26,30 @@ public class Parser {
         String args = (parts.length > 1) ? parts[1] : "";
 
         switch (cmd) {
-        case "bye":
-            return new ExitCommand();
-        case "list":
-            return new ListCommand();
-        case "todo":
-            return new AddTodoCommand(args);
-        case "deadline":
-            return new AddDeadlineCommand(args);
-        case "event":
-            return new AddEventCommand(args);
-        case "mark":
-            return new MarkCommand(args);
-        case "unmark":
-            return new UnmarkCommand(args);
-        case "delete":
-            return new DeleteCommand(args);
-        case "add":
-            return new AddCommand(args);
-        default:
-            return new UnknownCommand(fullCmd);
+            case "bye":
+                return new ExitCommand();
+            case "list":
+                if (args != null && args.toLowerCase(java.util.Locale.ROOT).startsWith("between ")) {
+                    String rest = args.substring("between".length()).trim(); // "YYYY-MM-DD YYYY-MM-DD"
+                    return new ListBetweenCommand(rest);
+                }
+                return new ListCommand();
+            case "todo":
+                return new AddTodoCommand(args);
+            case "deadline":
+                return new AddDeadlineCommand(args);
+            case "event":
+                return new AddEventCommand(args);
+            case "mark":
+                return new MarkCommand(args);
+            case "unmark":
+                return new UnmarkCommand(args);
+            case "delete":
+                return new DeleteCommand(args);
+            case "add":
+                return new AddCommand(args);
+            default:
+                return new UnknownCommand(fullCmd);
         }
     }
 }

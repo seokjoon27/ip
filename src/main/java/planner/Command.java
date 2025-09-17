@@ -293,3 +293,68 @@ class DeleteCommand extends Command {
                 + "\nNow you have " + t.size() + " tasks in the list.");
     }
 }
+
+/**
+ * Lists only deadlines within an inclusive period.
+ * Usage: list between yyyy-MM-dd yyyy-MM-dd
+ */
+class ListBetweenCommand extends Command {
+    private final String range;
+
+    /**
+     * Creates a list-between command.
+     *
+     * @param range two dates separated by space, both in yyyy-MM-dd
+     */
+    ListBetweenCommand(String range) {
+        this.range = range;
+    }
+
+    /**
+     * Shows only {@link Deadline} tasks whose due date is within the inclusive range.
+     *
+     * @param t  task list
+     * @param ui UI to print messages
+     * @param s  storage (unused)
+     * @throws Exception if the input is invalid
+     */
+    @Override
+    public void execute(TaskList t, Ui ui, Storage s) throws Exception {
+        assert t != null && ui != null : "dependencies must not be null";
+        if (range == null || range.isBlank()) {
+            throw new Exception("Usage: list between <yyyy-MM-dd> <yyyy-MM-dd>");
+        }
+
+        String[] parts = range.trim().split("\\s+");
+        if (parts.length != 2) {
+            throw new Exception("Usage: list between <yyyy-MM-dd> <yyyy-MM-dd>");
+        }
+
+        String start = parts[0];
+        String end   = parts[1];
+
+        try {
+            java.time.LocalDate.parse(start);
+            java.time.LocalDate.parse(end);
+        } catch (java.time.format.DateTimeParseException ex) {
+            throw new Exception("Dates must be in yyyy-MM-dd.");
+        }
+        if (start.compareTo(end) > 0) {
+            throw new Exception("The start date must not be after the end date.");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int shown = 0;
+        for (int i = 0; i < t.size(); i++) {
+            Task task = t.get(i);
+            if (task instanceof Deadline) {
+                String iso = ((Deadline) task).getByIso();
+                if (iso.compareTo(start) >= 0 && iso.compareTo(end) <= 0) {
+                    sb.append(++shown).append(". ").append(task).append('\n'); // 1..n 번호
+                }
+            }
+        }
+        ui.show(shown == 0 ? "No deadlines in the given period."
+                : sb.toString().trim());
+    }
+}
