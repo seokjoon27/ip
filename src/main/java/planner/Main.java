@@ -23,11 +23,14 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane root = loader.load();
 
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Main.class.getResource("/view/app.css").toExternalForm());
+
             MainWindow controller = loader.getController();
             controller.setEstj(estj);
 
             stage.setTitle("iP (ESTJ)");
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
         } catch (Exception e) {

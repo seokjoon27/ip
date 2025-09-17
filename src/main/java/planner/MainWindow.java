@@ -19,9 +19,9 @@ public class MainWindow {
 
     @FXML private Button sendButton;
 
-    private final Image userImage = new Image(getClass().getResourceAsStream("/images/DaUser.png"));
+    private final Image userImage = new Image(getClass().getResourceAsStream("/images/MBTI.png"));
 
-    private final Image dukeImage = new Image(getClass().getResourceAsStream("/images/DaDuke.png"));
+    private final Image dukeImage = new Image(getClass().getResourceAsStream("/images/ESTJ.png"));
 
     private Responder estj;
 
@@ -40,7 +40,12 @@ public class MainWindow {
      */
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        dialogContainer.getChildren().add(
+                DialogBox.getDukeDialog(
+                        "Hi, my name is ESTJ. Try your first step to be a MBTI-J person!",
+                        dukeImage
+                )
+        );
     }
 
     @FXML
