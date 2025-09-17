@@ -21,19 +21,14 @@ if %ERRORLEVEL%==0 (
   if errorlevel 1 exit /b 1
 ) else (
   echo [runtest] JavaFX NOT found ^> compiling HEADLESS core only (exclude GUI classes)
-  > "%ROOT_DIR%.sources.txt" (
-    for /f "delims=" %%f in ('dir /s /b "%SRC_DIR%\*.java"') do (
-      set "B=%%~nxf"
-      if /I not "!B!"=="Main.java" ^
-      if /I not "!B!"=="Launcher.java" ^
-      if /I not "!B!"=="MainWindow.java" ^
-      if /I not "!B!"=="DialogBox.java" ^
-      if /I not "!B!"=="GuiUi.java" ^
-      if /I not "!B!"=="PlannerResponder.java" echo %%f
+    > "%ROOT_DIR%.sources.txt" (
+      for /f "delims=" %%f in ('dir /s /b "%SRC_DIR%\*.java"') do (
+        set "B=%%~nxf"
+        if /I not "!B!"=="Main.java" if /I not "!B!"=="Launcher.java" if /I not "!B!"=="MainWindow.java" if /I not "!B!"=="DialogBox.java" if /I not "!B!"=="GuiUi.java" if /I not "!B!"=="PlannerResponder.java" echo %%f
+      )
     )
-  )
-  javac -Xlint:none -encoding UTF-8 -d "%OUT_DIR%" @"%ROOT_DIR%.sources.txt"
-  if errorlevel 1 exit /b 1
+    javac -Xlint:none -encoding UTF-8 -d "%OUT_DIR%" @"%ROOT_DIR%.sources.txt"
+    if errorlevel 1 exit /b 1
 )
 
 echo [runtest] Compile step done.
