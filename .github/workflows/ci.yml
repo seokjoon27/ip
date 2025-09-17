@@ -48,6 +48,13 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install dos2unix
 
+      - name: Normalize EOL and make scripts executable (*NIX/macOS)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          dos2unix text-ui-test/runtest.sh || true
+          chmod +x gradlew
+          chmod +x text-ui-test/runtest.sh
+
       - name: Text UI test (*NIX/macOS)
         if: runner.os == 'Linux' || runner.os == 'macOS'
         working-directory: ${{ github.workspace }}/text-ui-test
