@@ -1,6 +1,6 @@
 # ESTJ User Guide
 
-![Main UI](docs/Ui.png)
+![Main UI](./Ui.png)
 
 ESTJ is a messenger-like task planner.
 You can add / delete / mark / check tasks with simple commands.
