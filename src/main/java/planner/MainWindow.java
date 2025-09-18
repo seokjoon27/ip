@@ -1,5 +1,6 @@
 package planner;
 
+import java.util.Locale;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -46,6 +47,9 @@ public class MainWindow {
                         dukeImage
                 )
         );
+        dialogContainer.heightProperty().addListener((obs, oldV, newV) -> {
+            scrollPane.setVvalue(1.0);
+        });
     }
 
     @FXML
@@ -57,14 +61,6 @@ public class MainWindow {
 
         dialogContainer.getChildren().add(DialogBox.getUserDialog(input, userImage));
 
-        if (input.matches("(?i)^(todo|deadline|event)\\b.*")) {
-            dialogContainer.getChildren().add(
-                    DialogBox.getDukeDialog("Nice plan!", dukeImage));
-        } else if (input.matches("(?i)^mark\\s+\\d+\\b.*")) {
-            dialogContainer.getChildren().add(
-                    DialogBox.getDukeDialog("Well done! Wish your planning habits helped you!", dukeImage));
-        }
-
         String reply;
         try {
             reply = estj.getResponse(input);
@@ -72,13 +68,33 @@ public class MainWindow {
             reply = "Error: " + e.getMessage();
         }
 
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(reply, dukeImage)
-        );
+        String prefix = null;
+
+        String in = input.trim().toLowerCase(Locale.ROOT);
+        String out = reply.trim().toLowerCase(Locale.ROOT);
+
+        if (in.startsWith("todo ") || in.startsWith("deadline ") || in.startsWith("event ")) {
+            boolean addSuccess = out.startsWith("added:");
+            if (addSuccess) {
+                prefix = "Nice plan!";
+            }
+        }
+
+        if (prefix == null && in.startsWith("mark ")) {
+            boolean looksOk = !out.startsWith("error:") && !out.startsWith("usage:");
+            boolean successKeyword = out.contains("marked") || out.contains("done") || out.contains("completed");
+            if (looksOk && successKeyword) {
+                prefix = "Well done! Wish your planning habits helped you!";
+            }
+        }
+
+        if (prefix != null) {
+            reply = prefix + System.lineSeparator() + reply;
+        }
+
+        dialogContainer.getChildren().add(DialogBox.getDukeDialog(reply, dukeImage));
 
         userInput.clear();
-
         if ("bye".equalsIgnoreCase(input.trim())) {
             userInput.setDisable(true);
             sendButton.setDisable(true);

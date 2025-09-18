@@ -1,14 +1,11 @@
 package planner;
 
 import java.io.IOException;
-import java.util.Collections;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,18 +34,23 @@ public class DialogBox extends HBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         dialog.setText(text);
         displayPicture.setImage(img);
 
         this.getStyleClass().add("dialog-box");
         dialog.getStyleClass().add("dialog-text");
         displayPicture.getStyleClass().add("dialog-avatar");
+        getChildren().setAll(displayPicture, dialog);
     }
 
-    private void flip() {
-        ObservableList<Node> tmp = FXCollections.observableArrayList(getChildren());
-        Collections.reverse(tmp);
-        getChildren().setAll(tmp);
+    private void orientLeft() {
+        setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        setAlignment(Pos.TOP_LEFT);
+    }
+
+    private void orientRight() {
+        setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         setAlignment(Pos.TOP_RIGHT);
     }
 
@@ -62,7 +64,7 @@ public class DialogBox extends HBox {
     public static DialogBox getUserDialog(String text, Image img) {
         DialogBox db = new DialogBox(text, img);
         db.getStyleClass().add("user");
-        db.flip();
+        db.orientRight();
         return db;
     }
 
@@ -76,6 +78,7 @@ public class DialogBox extends HBox {
     public static DialogBox getDukeDialog(String text, Image img) {
         DialogBox db = new DialogBox(text, img);
         db.getStyleClass().add("program");
+        db.orientLeft();
         return db;
     }
 }
