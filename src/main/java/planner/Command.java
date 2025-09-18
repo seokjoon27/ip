@@ -240,7 +240,7 @@ class MarkCommand extends Command {
         Task task = t.get(idx);
         task.markDone();
         s.save(t.asList());
-        ui.show("Nice! I've marked this task as done:\n" + task);
+        ui.show("I've marked this task as done:\n" + task);
     }
 }
 
