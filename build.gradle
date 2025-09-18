@@ -34,6 +34,9 @@ dependencies {
     testRuntimeOnly  'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 }
 
+group = 'ip'
+version = '0.2.0'
+
 java {
     toolchain { languageVersion = JavaLanguageVersion.of(17) }
 }
@@ -47,7 +50,13 @@ application {
 }
 
 shadowJar {
-    archiveFileName = 'ip.jar'
+    archiveBaseName.set('ip')
+    archiveClassifier.set('all')
+    manifest {
+        attributes(
+                'Main-Class': 'planner.Launcher'
+        )
+    }
 }
 
 run {
