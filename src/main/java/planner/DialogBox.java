@@ -26,12 +26,6 @@ public class DialogBox extends HBox {
     @FXML
     private void initialize() {
         dialog.setWrapText(true);
-        dialog.getStyleClass().add("dialog-text");
-        this.getStyleClass().add("dialog-box");
-
-        if (displayPicture != null) {
-            displayPicture.getStyleClass().add("dialog-avatar");
-        }
     }
 
     private DialogBox(String text, Image img) {
@@ -45,13 +39,17 @@ public class DialogBox extends HBox {
         }
         dialog.setText(text);
         displayPicture.setImage(img);
+
+        this.getStyleClass().add("dialog-box");
+        dialog.getStyleClass().add("dialog-text");
+        displayPicture.getStyleClass().add("dialog-avatar");
     }
 
     private void flip() {
         ObservableList<Node> tmp = FXCollections.observableArrayList(getChildren());
         Collections.reverse(tmp);
         getChildren().setAll(tmp);
-        setAlignment(Pos.TOP_LEFT);
+        setAlignment(Pos.TOP_RIGHT);
     }
 
     /**

@@ -55,6 +55,16 @@ public class MainWindow {
             return;
         }
 
+        dialogContainer.getChildren().add(DialogBox.getUserDialog(input, userImage));
+
+        if (input.matches("(?i)^(todo|deadline|event)\\b.*")) {
+            dialogContainer.getChildren().add(
+                    DialogBox.getDukeDialog("Nice plan!", dukeImage));
+        } else if (input.matches("(?i)^mark\\s+\\d+\\b.*")) {
+            dialogContainer.getChildren().add(
+                    DialogBox.getDukeDialog("Well done! Wish your planning habits helped you!", dukeImage));
+        }
+
         String reply;
         try {
             reply = estj.getResponse(input);
